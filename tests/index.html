@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Riot Test Suite</title>
+		<style>
+			html { background-color: #272625; }
+			body { padding: 0; margin: 0; }
+			pre {
+				font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
+				font-size: 12px;
+				text-shadow: 0 -1px 1px #221E1C;
+				color: #EBEFE7;
+				background-repeat: repeat;
+				line-height: 15px;
+				padding: 10px;
+				margin: 0;
+			}
+			pre .ok      { color: #99C270; }
+			pre .pending { color: #669199; }
+			pre .fail    { color: #A33D29; }
+			pre #time    { color: #aaa }
+			#test-fixture { display: none; }
+		</style>
+		<script type="text/javascript" src="../floodlight.js"></script>
+		<script type="text/javascript" src="riot.js"></script>
+		<script>
+			/* Format the results similar to Vows - http://cloudhead.io/vows/ */
+			Riot.Formatters.HTML = function() {
+				function escape(string) {
+					return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+				};
+
+				function display(text) {
+					var results = document.getElementById('test-results');
+					results.innerHTML += text + '\n';
+				}
+
+			  this.line = function(text) {
+					display(text);
+				};
+
+				this.pass = function(message) {
+					this.line('  &#x2713; <span class="ok">' + escape(message) + '</span>');
+				};
+
+ 				this.fail = function(message) {
+					this.line('  &#x2718; <span class="fail">' + escape(message) + '</span>');
+				};
+
+				this.error = function(message, exception) {
+					this.fail(message);
+					this.line('  Exception: ' + exception);
+			  };
+
+				this.context = function(name) {
+					this.separator();
+					this.line('# ' + name);
+			  };
+
+				this.given = function(name) {
+					this.line('  - ' + escape(name));
+				};
+
+				this.separator = function() {
+					this.line('');
+				};
+			};
+		</script>
+		<script type="text/javascript" src="test.js"></script>
+	</head>
+	<body>
+		<pre id="test-results"></pre>
+	</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Floodlight (X)HTML Syntax Highlighter</title>
+		<style>
+			body {
+				font-family: HelveticaNeue;
+				color: rgba(255, 255, 255, 0.9);
+				background-color: #272625;
+				padding: 20px;
+				margin: 0;
+			}
+
+			h1 {
+				font-weight: normal;
+			}
+
+			pre {
+				font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace !important;
+				text-shadow: 0 -1px 1px #221E1C;
+				color: #EBEFE7;
+				background-repeat: repeat;
+				padding: 10px;
+				margin: 0;
+				font-size: 12px;
+				line-height: 15px;
+				border: 1px dashed rgba(168, 225, 36, 1.0);
+				background-color: rgba(39, 40, 34, 1.0);
+				color: rgba(248, 248, 242, 1.0);
+			}
+
+			pre .bracket {
+			}
+
+			pre .tag {
+				color: rgba(249, 38, 114, 1.0);
+			  background-color: rgba(0,0,0,0.0);
+			}
+
+			pre .attribute {
+				color: rgba(168, 225, 36, 1.0);
+			}
+
+			pre .value {
+				color: rgba(230, 219, 116, 1.0);
+			}
+
+			pre .comment {
+				color: rgba(117, 113, 94, 1.0);
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Floodlight (X)HTML Syntax Highlighter</h1>
+		<p>Use <code>floodlight(string);</code> add style hooks to your code.</p>
+		<pre id="syntax">
+&lt;!-- Floodlight (X)HTML Syntax Highlighter --&gt;
+&lt;h1&gt;Floodlight (X)HTML Syntax Highlighter&lt;/h1&gt;
+&lt;p&gt;Use &lt;code&gt;floodlight(string);&lt;/code&gt; to add style hooks to your code.&lt;/p&gt;
+&lt;pre id=&quot;syntax&quot;&gt;
+	&amp;amp;lt;div&amp;amp;gt;Example Code&amp;amp;lt;/div&amp;amp;gt;
+&lt;/pre&gt;
+&lt;script src=&quot;../floodlight.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+	var code   = document.getElementById(&#x27;syntax&#x27;),
+	    syntax = floodlight.decode(code.innerHTML);
+
+	code.innerHTML = floodlight(syntax);
+&lt;/script&gt;
+		</pre>
+		<script src="../floodlight.js"></script>
+		<script>
+			var code   = document.getElementById('syntax'),
+			    syntax = floodlight.decode(code.innerHTML);
+
+			code.innerHTML = floodlight(syntax);
+		</script>
+	</body>
+</html>
