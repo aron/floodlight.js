@@ -10,8 +10,7 @@
 		spaces: '  ',
 		regex: {
 			tag:     /(<\/?)(\w+)([^>]*)(\/?>)/gi,
-			/* Attribute regex source: http://ejohn.org/blog/pure-javascript-html-parser/ */
-			attr:    /(\w+)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
+			attr:    /(\w+)(?:\s*=\s*("[^"]*"|'[^']*'|[^>\s]+))?/g,
 			comment: /<!--[^\-]*-->/g,
 			encode:  /<|>|"|&/g,
 			decode:  /&(?:lt|gt|quot|amp);/g
@@ -33,9 +32,8 @@
 	}
 
 	function parseAttributes(attributes) {
-		return attributes.replace(options.regex.attr, function (match, a, v1, v2, v3) {
-			var value = (((v1 || v2) || v3) || '');
-			return wrap(a, 'attribute') + '=' + wrap('"' + value + '"', 'value');
+		return attributes.replace(options.regex.attr, function (match, attr, value) {
+			return wrap(attr, 'attribute') + (value ? '=' + wrap(value, 'value') : '');
 		});
 	}
 
