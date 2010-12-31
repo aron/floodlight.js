@@ -123,7 +123,7 @@
 		  'special': new(RegExp)('\\b(' + window.floodlight.javascript.special.join('|')  + ')\\b', 'g')
 		};
 
-		this.filters = ['whitepace'];
+		this.filters = ['whitespace'];
 
 		for (key in this.regex) {
 			(function (regex, name, filters) {
