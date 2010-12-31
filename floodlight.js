@@ -153,10 +153,10 @@
 			script:  (/<script[^>]*>([^<]*)<\/script>/gi)
 		};
 
-		this.filters = ['whitespace', 'html.script', 'html.entity', 'html.tag', 'html.comment'];
+		this.filters = ['whitespace', 'html.script', 'html.tag', 'html.comment', 'html.entity'];
 
 		addFilter('html.tag', this.regex.tag, function (match, open, tag, attr, close) {
-			var attributes = filter('html.attr', attr);
+			var attributes = filter('html.attr', attr, false);
 			return wrap(open, 'html-bracket') + wrap(tag, 'html-tag') + attributes + wrap(close, 'html-bracket');
 		});
 
