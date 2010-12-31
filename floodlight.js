@@ -100,35 +100,6 @@
 
 	addFilter('whitespace', (/\t/g), function () { return options.spaces; });
 
-	// ! floodlight.html();
-
-	window.floodlight.html = function (source) {
-		return filter(window.floodlight.html.filters, source);
-	};
-
-	(function () {
-		this.regex = {
-			tag:     (/(<\/?)(\w+)([^>]*)(\/?>)/g),
-			attr:    (/(\w+)(?:\s*=\s*("[^"]*"|'[^']*'|[^>\s]+))?/g),
-			comment: (/<!--[^\-]*-->/g)
-		};
-
-		this.filters = ['whitespace', 'html.tag', 'html.comment'];
-
-		addFilter('html.tag', this.regex.tag, function (match, open, tag, attr, close) {
-			var attributes = filter('html.attr', attr);
-			return wrap(open, 'html-bracket') + wrap(tag, 'html-tag') + attributes + wrap(close, 'html-bracket');
-		});
-
-		addFilter('html.attr', this.regex.attr, function (match, attr, value) {
-			return wrap(attr, 'html-attribute') + (value ? '=' + wrap(value, 'html-value') : '');
-		});
-
-		addFilter('html.comment', this.regex.comment, function (comment) {
-			return wrap(comment, 'html-comment');
-		});
-	}).call(window.floodlight.html);
-
 	// ! floodlight.javascript();
 
 	window.floodlight.javascript = function (source) {
@@ -166,4 +137,33 @@
 			})(window.floodlight.javascript.regex[key], key, this.filters);
 		}
 	}).call(window.floodlight.javascript);
+
+	// ! floodlight.html();
+
+	window.floodlight.html = function (source) {
+		return filter(window.floodlight.html.filters, source);
+	};
+
+	(function () {
+		this.regex = {
+			tag:     (/(<\/?)(\w+)([^>]*)(\/?>)/g),
+			attr:    (/(\w+)(?:\s*=\s*("[^"]*"|'[^']*'|[^>\s]+))?/g),
+			comment: (/<!--[^\-]*-->/g)
+		};
+
+		this.filters = ['whitespace', 'html.tag', 'html.comment'];
+
+		addFilter('html.tag', this.regex.tag, function (match, open, tag, attr, close) {
+			var attributes = filter('html.attr', attr);
+			return wrap(open, 'html-bracket') + wrap(tag, 'html-tag') + attributes + wrap(close, 'html-bracket');
+		});
+
+		addFilter('html.attr', this.regex.attr, function (match, attr, value) {
+			return wrap(attr, 'html-attribute') + (value ? '=' + wrap(value, 'html-value') : '');
+		});
+
+		addFilter('html.comment', this.regex.comment, function (comment) {
+			return wrap(comment, 'html-comment');
+		});
+	}).call(window.floodlight.html);
 })(this);
