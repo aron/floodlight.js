@@ -108,9 +108,9 @@
 
 	(function () {
 		this.regex = {
-			tag:     /(<\/?)(\w+)([^>]*)(\/?>)/g,
-			attr:    /(\w+)(?:\s*=\s*("[^"]*"|'[^']*'|[^>\s]+))?/g,
-			comment: /<!--[^\-]*-->/g
+			tag:     (/(<\/?)(\w+)([^>]*)(\/?>)/g),
+			attr:    (/(\w+)(?:\s*=\s*("[^"]*"|'[^']*'|[^>\s]+))?/g),
+			comment: (/<!--[^\-]*-->/g)
 		};
 
 		this.filters = ['whitespace', 'html.tag', 'html.comment'];
