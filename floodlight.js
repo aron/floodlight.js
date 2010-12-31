@@ -1,4 +1,4 @@
-/*  Floodlight (X)HTML Syntax Highlighter - v0.1
+/*  Floodlight (X)HTML Syntax Highlighter - v0.2
  *  Copyright 2010, Aron Carroll
  *  Released under the MIT license
  *  More Information: http://github.com/aron/floodlight.js
