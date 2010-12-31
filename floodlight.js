@@ -149,10 +149,11 @@
 			tag:     (/(<\/?)(\w+)([^>]*)(\/?>)/g),
 			attr:    (/(\w+)(?:\s*=\s*("[^"]*"|'[^']*'|[^>\s]+))?/g),
 			comment: (/<!--[^\-]*-->/g),
+			entity:  (/&[^;]+;/g),
 			script:  (/<script[^>]*>([^<]*)<\/script>/gi)
 		};
 
-		this.filters = ['whitespace', 'html.script', 'html.tag', 'html.comment'];
+		this.filters = ['whitespace', 'html.script', 'html.tag', 'html.comment', 'html.entity'];
 
 		addFilter('html.tag', this.regex.tag, function (match, open, tag, attr, close) {
 			var attributes = filter('html.attr', attr);
@@ -165,6 +166,10 @@
 
 		addFilter('html.comment', this.regex.comment, function (comment) {
 			return escapeMatch(comment, 'html-comment');
+		});
+
+		addFilter('html.entity', this.regex.entity, function (entity) {
+			return escapeMatch(entity, 'html-entity');
 		});
 
 		addFilter('html.script', this.regex.script, function (match, source) {

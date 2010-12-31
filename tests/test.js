@@ -24,6 +24,10 @@ Riot.run(function() {
 				return floodlight('<!---->');
 			}).equals('<span class="html-comment">&lt;!----&gt;</span>');
 
+			should('wrap entities', function () {
+				return floodlight('&amp;');
+			}).equals('<span class="html-entity">&amp;amp;</span>');
+
 			should('wrap elements in spans', function () {
 				return floodlight('<a href="#" title="Ooh a link">link</a>');
 			}).equals([
