@@ -42,6 +42,19 @@ Riot.run(function() {
 				'<span class="html-tag">a</span>',
 				'<span class="html-bracket">&gt;</span>'
 			].join(''));
+
+			should('wrap JavaScript within <script> tags in spans', function () {
+				return floodlight('<script>var hello = "world";</script>');
+			}).equals([
+				'<span class="html-bracket">&lt;</span>',
+				'<span class="html-tag">script</span>',
+				'<span class="html-bracket">&gt;</span>',
+				'<span class="javascript-keyword">var</span> hello = ',
+				'<span class="javascript-string">&quot;world&quot;</span>;',
+				'<span class="html-bracket">&lt;/</span>',
+				'<span class="html-tag">script</span>',
+				'<span class="html-bracket">&gt;</span>'
+			].join(''));
 		});
 	});
 
