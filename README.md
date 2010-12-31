@@ -24,11 +24,22 @@ done before calling `floodlight()` by using the `floodlight.decode()` function.
 
 The (X)HTML tokens are wrapped in `<span>` tags and can be styled as follows.
 
-    .bracket   { color: rgba(249, 38,  114, 1.0); }
-    .tag       { color: rgba(249, 38,  114, 1.0); }
-    .attribute { color: rgba(168, 225, 36,  1.0); }
-    .value     { color: rgba(230, 219, 116, 1.0); }
-    .comment   { color: rgba(117, 113, 94,  1.0); }
+    .html-bracket   { color: rgba(249, 38,  114, 1.0); }
+    .html-tag       { color: rgba(249, 38,  114, 1.0); }
+    .html-attribute { color: rgba(168, 225, 36,  1.0); }
+    .html-value     { color: rgba(230, 219, 116, 1.0); }
+    .html-entity    { color: rgba(174, 129, 255, 1.0); }
+    .html-comment   { color: rgba(117, 113, 94,  1.0); }
+
+JavaScript gets the following styles.
+
+    .javascript-number  { color: rgba(174, 129, 255, 1.0); }
+    .javascript-string  { color: rgba(230, 219, 116, 1.0); }
+    .javascript-keyword { color: rgba(102, 217, 239, 1.0); }
+    .javascript-class   { color: rgba(168, 225, 36, 1.0);  }
+    .javascript-regexp  { color: rgba(168, 225, 36, 1.0);  }
+    .javascript-special { color: rgba(102, 217, 239, 1.0); }
+    .javascript-comment { color: rgba(117, 113, 94, 1.0);  }
 
 ### Options
 
@@ -53,6 +64,18 @@ Extras
 
 Floodlight also provides the following helper methods.
 
+### floodlight.html()
+
+Same as just calling `floodlight()`, highlights (X)HTML & JavaScript found in
+the source code.
+
+### floodlight.javascript()
+
+Highlights JavaScript found in the source code.
+
+    floodlight.javascript('var index = 0;');
+    //=> '<span class="javascript-keyword">var</span> index = <span class="javascript-number">0</span>;'
+
 ### floodlight.encode()
 
 Encodes special characters (&, <, > and ") into HTML entities.
@@ -70,7 +93,7 @@ Encodes special characters (&, <, > and ") into HTML entities.
 To Do
 -----
 
- - JavaScript & CSS highlighting
+ - CSS highlighting
 
 License
 -------
