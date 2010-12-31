@@ -71,7 +71,7 @@
 		return '<span class="' + options.prefix + klass + '">' + entities(string, 'encode') + '</span>';
 	}
 
-	function filter(filters, string) {
+	function filter(filters, string, escape) {
 		var index = 0, count, filter;
 
 		filters = isArray(filters) ? filters : [filters];
@@ -82,7 +82,7 @@
 				string = string.replace(filter.regex, filter.callback);
 			}
 		}
-		return string;
+		return escape === false ? string : unwrap(string);
 	}
 
 	function addFilter(name, regex, callback) {
@@ -103,7 +103,7 @@
 	// ! floodlight.javascript();
 
 	window.floodlight.javascript = function (source) {
-			return unwrap(filter(window.floodlight.javascript.filters, source));
+			return filter(window.floodlight.javascript.filters, source);
 	};
 
 	(function () {
@@ -141,7 +141,7 @@
 	// ! floodlight.html();
 
 	window.floodlight.html = function (source) {
-		return unwrap(filter(window.floodlight.html.filters, source));
+		return filter(window.floodlight.html.filters, source);
 	};
 
 	(function () {
@@ -153,7 +153,7 @@
 			script:  (/<script[^>]*>([^<]*)<\/script>/gi)
 		};
 
-		this.filters = ['whitespace', 'html.script', 'html.tag', 'html.comment', 'html.entity'];
+		this.filters = ['whitespace', 'html.script', 'html.entity', 'html.tag', 'html.comment'];
 
 		addFilter('html.tag', this.regex.tag, function (match, open, tag, attr, close) {
 			var attributes = filter('html.attr', attr);
@@ -173,7 +173,7 @@
 		});
 
 		addFilter('html.script', this.regex.script, function (match, source) {
-			var js = filter(window.floodlight.javascript.filters, source);
+			var js = filter(window.floodlight.javascript.filters, source, false);
 			return match.replace(source, js);
 		});
 	}).call(window.floodlight.html);
