@@ -37,15 +37,29 @@
 			  background-color: rgba(0,0,0,0.0);
 			}
 
-			pre .html-attribute {
+			pre .html-attribute,
+			pre .javascript-class,
+			pre .javascript-regexp {
 				color: rgba(168, 225, 36, 1.0);
 			}
 
-			pre .html-value {
+			pre .html-value,
+			pre .javascript-string {
 				color: rgba(230, 219, 116, 1.0);
 			}
 
-			pre .html-comment {
+			pre .javascript-keyword,
+			pre .javascript-special {
+				color: rgba(102, 217, 239, 1.0);
+				font-style: italic;
+			}
+
+			pre .javascript-number {
+				color: rgba(174, 129, 255, 1.0);
+			}
+
+			pre .html-comment,
+			pre .javascript-comment {
 				color: rgba(117, 113, 94, 1.0);
 			}
 		</style>

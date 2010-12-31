@@ -141,29 +141,35 @@
 	// ! floodlight.html();
 
 	window.floodlight.html = function (source) {
-		return filter(window.floodlight.html.filters, source);
+		return unescapeMatch(filter(window.floodlight.html.filters, source));
 	};
 
 	(function () {
 		this.regex = {
 			tag:     (/(<\/?)(\w+)([^>]*)(\/?>)/g),
 			attr:    (/(\w+)(?:\s*=\s*("[^"]*"|'[^']*'|[^>\s]+))?/g),
-			comment: (/<!--[^\-]*-->/g)
+			comment: (/<!--[^\-]*-->/g),
+			script:  (/<script[^>]*>([^<]*)<\/script>/gi)
 		};
 
-		this.filters = ['whitespace', 'html.tag', 'html.comment'];
+		this.filters = ['whitespace', 'html.script', 'html.tag', 'html.comment'];
 
 		addFilter('html.tag', this.regex.tag, function (match, open, tag, attr, close) {
 			var attributes = filter('html.attr', attr);
-			return wrap(open, 'html-bracket') + wrap(tag, 'html-tag') + attributes + wrap(close, 'html-bracket');
+			return escapeMatch(open, 'html-bracket') + escapeMatch(tag, 'html-tag') + attributes + escapeMatch(close, 'html-bracket');
 		});
 
 		addFilter('html.attr', this.regex.attr, function (match, attr, value) {
-			return wrap(attr, 'html-attribute') + (value ? '=' + wrap(value, 'html-value') : '');
+			return escapeMatch(attr, 'html-attribute') + (value ? '=' + escapeMatch(value, 'html-value') : '');
 		});
 
 		addFilter('html.comment', this.regex.comment, function (comment) {
-			return wrap(comment, 'html-comment');
+			return escapeMatch(comment, 'html-comment');
+		});
+
+		addFilter('html.script', this.regex.script, function (match, source) {
+			var js = filter(window.floodlight.javascript.filters, source);
+			return match.replace(source, js);
 		});
 	}).call(window.floodlight.html);
 })(this);
