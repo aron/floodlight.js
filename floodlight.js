@@ -63,11 +63,11 @@
 	function unescapeMatch(string) {
 		return string.replace(/\u00ab(.+?)\u00b7(.+?)\u00b7\1\u00bb/g, function (_, name, value) {
 			value = value.replace(/\u00ab[^\u00b7]+\u00b7/g, '').replace(/\u00b7[^\u00bb]+\u00bb/g, '');
-			return wrap(decode(value), decode(name));
+			return span(decode(value), decode(name));
 		});
 	}
 
-	function wrap(string, klass) {
+	function span(string, klass) {
 		return '<span class="' + options.prefix + klass + '">' + entities(string, 'encode') + '</span>';
 	}
 
