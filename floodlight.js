@@ -54,13 +54,13 @@
 		return _table[string];
 	}
 
-	function escapeMatch(string, klass) {
+	function wrap(string, klass) {
 		return '\u00ab' + encode(klass)  + '\u00b7'
 		                + encode(string) +
 		       '\u00b7' + encode(klass)  + '\u00bb';
 	}
 
-	function unescapeMatch(string) {
+	function unwrap(string) {
 		return string.replace(/\u00ab(.+?)\u00b7(.+?)\u00b7\1\u00bb/g, function (_, name, value) {
 			value = value.replace(/\u00ab[^\u00b7]+\u00b7/g, '').replace(/\u00b7[^\u00bb]+\u00bb/g, '');
 			return span(decode(value), decode(name));
@@ -103,7 +103,7 @@
 	// ! floodlight.javascript();
 
 	window.floodlight.javascript = function (source) {
-			return unescapeMatch(filter(window.floodlight.javascript.filters, source));
+			return unwrap(filter(window.floodlight.javascript.filters, source));
 	};
 
 	(function () {
@@ -130,7 +130,7 @@
 				var namespace = 'javascript.' + name;
 
 				addFilter(namespace, regex, function (match, capture) {
-					return escapeMatch(capture, 'javascript-' + name);
+					return wrap(capture, 'javascript-' + name);
 				});
 
 				filters.push(namespace);
@@ -141,7 +141,7 @@
 	// ! floodlight.html();
 
 	window.floodlight.html = function (source) {
-		return unescapeMatch(filter(window.floodlight.html.filters, source));
+		return unwrap(filter(window.floodlight.html.filters, source));
 	};
 
 	(function () {
@@ -157,19 +157,19 @@
 
 		addFilter('html.tag', this.regex.tag, function (match, open, tag, attr, close) {
 			var attributes = filter('html.attr', attr);
-			return escapeMatch(open, 'html-bracket') + escapeMatch(tag, 'html-tag') + attributes + escapeMatch(close, 'html-bracket');
+			return wrap(open, 'html-bracket') + wrap(tag, 'html-tag') + attributes + wrap(close, 'html-bracket');
 		});
 
 		addFilter('html.attr', this.regex.attr, function (match, attr, value) {
-			return escapeMatch(attr, 'html-attribute') + (value ? '=' + escapeMatch(value, 'html-value') : '');
+			return wrap(attr, 'html-attribute') + (value ? '=' + wrap(value, 'html-value') : '');
 		});
 
 		addFilter('html.comment', this.regex.comment, function (comment) {
-			return escapeMatch(comment, 'html-comment');
+			return wrap(comment, 'html-comment');
 		});
 
 		addFilter('html.entity', this.regex.entity, function (entity) {
-			return escapeMatch(entity, 'html-entity');
+			return wrap(entity, 'html-entity');
 		});
 
 		addFilter('html.script', this.regex.script, function (match, source) {
