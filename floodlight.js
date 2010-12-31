@@ -5,36 +5,22 @@
  */
 
 (function (window, undefined) {
-	var options = {
-		prefix: '',
-		spaces: '  ',
-		regex: {
-			tag:     /(<\/?)(\w+)([^>]*)(\/?>)/gi,
-			attr:    /(\w+)(?:\s*=\s*("[^"]*"|'[^']*'|[^>\s]+))?/g,
-			comment: /<!--[^\-]*-->/g,
-			encode:  /<|>|"|&/g,
-			decode:  /&(?:lt|gt|quot|amp);/g
-		},
-		map: {
-			encode: {'<':'&lt;', '>':'&gt;', '"':'&quot;', '&':'&amp;'},
-			decode: {'&lt;':'<', '&gt;':'>', '&quot;':'"', '&amp;':'&'}
-		}
-	};
+	var _filters = {},
+	    options  = {
+	    	prefix: '',
+	    	spaces: '  ',
+	    	regex: {
+	    		encode:  /<|>|"|&/g,
+	    		decode:  /&(?:lt|gt|quot|amp);/g
+	    	},
+	    	map: {
+	    		encode: {'<':'&lt;', '>':'&gt;', '"':'&quot;', '&':'&amp;'},
+	    		decode: {'&lt;':'<', '&gt;':'>', '&quot;':'"', '&amp;':'&'}
+	    	}
+	    };
 
-	function parseTags(source) {
-		return source.replace(/\t/g, options.spaces).replace(options.regex.tag,
-			function (match, open, tag, attr, close) {
-				return wrap(open, 'bracket') + wrap(tag, 'tag') + parseAttributes(attr) + wrap(close, 'bracket');
-			}
-		).replace(options.regex.comment, function (comment) {
-			return wrap(comment, 'comment');
-		});
-	}
-
-	function parseAttributes(attributes) {
-		return attributes.replace(options.regex.attr, function (match, attr, value) {
-			return wrap(attr, 'attribute') + (value ? '=' + wrap(value, 'value') : '');
-		});
+	function isArray(array) {
+		return Object.prototype.toString.call(array) === '[object Array]';
 	}
 
 	function entities(string, type) {
@@ -47,7 +33,45 @@
 		return '<span class="' + options.prefix + klass + '">' + entities(string, 'encode') + '</span>';
 	}
 
-	window.floodlight = parseTags;
+	function filter(filters, string) {
+		var index = 0, count, filter;
+
+		filters = isArray(filters) ? filters : [filters];
+		for (count = filters.length; index < count; index += 1) {
+			filter = _filters[filters[index]];
+
+			if (filter) {
+				string = string.replace(filter.regex, filter.callback);
+			}
+		}
+		return string;
+	}
+
+	function addFilter(name, regex, callback) {
+		_filters[name] = {regex: regex, callback: callback};
+	}
+	addFilter('trim', (/\t/g), function () { return options.spaces; });
+
+	window.floodlight = function (source) {
+		return window.floodlight.html(source);
+	};
+
+	window.floodlight.html = (function () {
+		addFilter('html.tag', (/(<\/?)(\w+)([^>]*)(\/?>)/gi), function (match, open, tag, attr, close) {
+			var attributes = filter('html.attr', attr);
+			return wrap(open, 'bracket') + wrap(tag, 'tag') + attributes + wrap(close, 'bracket');
+		});
+		addFilter('html.attr', (/(\w+)(?:\s*=\s*("[^"]*"|'[^']*'|[^>\s]+))?/g), function (match, attr, value) {
+			return wrap(attr, 'attribute') + (value ? '=' + wrap(value, 'value') : '');
+		});
+		addFilter('html.comment', (/<!--[^\-]*-->/g), function (comment) {
+			return wrap(comment, 'comment');
+		});
+		
+		return function (source) {
+			return filter(['trim', 'html.tag', 'html.comment'], source);
+		};
+	}).call(floodlight);
 
 	window.floodlight.encode  = function (string) { return entities(string, 'encode'); };
 	window.floodlight.decode  = function (string) { return entities(string, 'decode'); };
