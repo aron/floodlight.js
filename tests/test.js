@@ -24,6 +24,10 @@ Riot.run(function() {
 				return floodlight('<!---->');
 			}).equals('<span class="html-comment">&lt;!----&gt;</span>');
 
+			should('wrap comments containing html', function () {
+				return floodlight('<!-- My <div> is ace -->');
+			}).equals('<span class="html-comment">&lt;!-- My &lt;div&gt; is ace --&gt;</span>');
+
 			should('wrap entities', function () {
 				return floodlight('&amp;');
 			}).equals('<span class="html-entity">&amp;amp;</span>');

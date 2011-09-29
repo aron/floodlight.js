@@ -51,7 +51,7 @@
 	}
 
 	function decode(string) {
-		return _table[string];
+		return _table[string] || '';
 	}
 
 	function wrap(string, klass) {
@@ -138,6 +138,61 @@
 		}
 	}).call(window.floodlight.javascript);
 
+	// ! floodlight.css();
+
+	window.floodlight.css = function (source) {
+		return filter(window.floodlight.css.filters, source);
+	};
+
+	(function () {
+		
+		var escape  = '/[0-9a-f]{1,6}(?:\\r\\n|[ \\n\\r\\t\\f])?|[^\\n\\r\\f0-9a-f]/',
+		    nmstart = '[_a-z]|[^\\0-\\237]|(?:' + escape + ')',
+		    nmchar  = '[_a-z0-9-]|[^\\0-\\237]|(?:' + escape + ')',
+		    ident   = '[-]?(?:' + nmstart + ')(?:' + nmchar + ')*';
+		
+		this.regex = {
+			rule: new RegExp('@' + ident, 'g'),
+			selector: new RegExp(ident, 'g'),
+			string: new RegExp('(?:"|\')(?:[^\\n\\r\\f\\1]|\\n\\\|\\r\\n|\\r|\\f|' + escape + ')*\\1', 'g'),
+			number: /[0-9]+|[0-9]*\.[0-9]+/g,
+			block: /\{([^\}]*)\}/g,
+			declaration: new RegExp('(' + ident + ')[^:]*:[\\s\\n]*([^;]*);', 'g'),
+			comment: /\/\*[^*]*\*+([^/*][^*]*\*+)*\//g
+		};
+		
+		this.filters = ['css.comment', 'css.block'];
+		
+		
+		addFilter('css.block', this.regex.block, function (_, contents) {
+			var declarations = filter('css.declaration', contents, false);
+			return _.replace(contents, declarations);
+		});
+		
+		addFilter('css.declaration', this.regex.declaration, function (_, prop, value) {
+			console.log("%o", value);
+			var wrapped_value = filter(['css.string', 'css.number'], value, false);
+			if (wrapped_value === value) {
+				wrapped_value = wrap(value, 'css-value');
+			}
+			return _.replace(prop, wrap(prop, 'css-property')).replace(value, wrapped_value);
+		});
+
+		addFilter('css.string', this.regex.string, function (string) {
+			console.log("'%o'", string);
+			return wrap(string, 'css-string');
+		});
+		
+		addFilter('css.number', this.regex.number, function (number) {
+			return wrap(number, 'css-number');
+		});
+
+		addFilter('css.comment', this.regex.comment, function (comment) {
+			return wrap(comment, 'css-comment');
+		});
+		
+	}).call(window.floodlight.css);
+
 	// ! floodlight.html();
 
 	window.floodlight.html = function (source) {
@@ -145,6 +200,7 @@
 	};
 
 	(function () {
+
 		this.regex = {
 			tag:     (/(<\/?)(\w+)([^>]*)(\/?>)/g),
 			attr:    (/(\w+)(?:\s*=\s*("[^"]*"|'[^']*'|[^>\s]+))?/g),
@@ -153,7 +209,7 @@
 			script:  (/<script[^>]*>([^<]*)<\/script>/gi)
 		};
 
-		this.filters = ['whitespace', 'html.script', 'html.tag', 'html.comment', 'html.entity'];
+		this.filters = ['whitespace', 'html.script', 'html.comment', 'html.tag', 'html.entity'];
 
 		addFilter('html.tag', this.regex.tag, function (match, open, tag, attr, close) {
 			var attributes = filter('html.attr', attr, false);
@@ -176,5 +232,6 @@
 			var js = filter(window.floodlight.javascript.filters, source, false);
 			return match.replace(source, js);
 		});
+
 	}).call(window.floodlight.html);
 })(this);
